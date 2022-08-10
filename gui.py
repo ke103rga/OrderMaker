@@ -2,14 +2,23 @@ import tkinter as tk
 import tkinter.filedialog as fd
 from tkinter import messagebox
 from buyer_order_converter import get_order, convert_order
+from xls_maker import create_xls_fie, arrange_xls_file
 import lumna_searcher
 import interservice_searcher
 import pandas as pd
 
 
-def create_xls_fie(lst, filename="Order.xls"):
-    df = pd.DataFrame(lst)
-    df.to_excel(filename)
+# def create_xls_fie(lst, filename="Order.xls"):
+#     df = pd.DataFrame(lst)
+#
+#     df = df.reindex(columns=["Код", "Люмн. Код", "Наименование",
+#                              "Артикул", "ISBN", "Автор",
+#                              "Издательство", "Год издания", "Количество",
+#                              "Остаток", "Интер. Цена", "Интер. Цена со скидкой", "Заказ",
+#                              "Люмн. Остаток", "Люмн. Цена", "Люмн. Цена со скидкой", "Заказ (количество)",
+#                              "Проверка"])
+#
+#     df.to_excel(filename)
 
 
 def create_dir_path(file_path):
@@ -66,9 +75,11 @@ def process_order(files_data, filename, window):
 
         result_file_path = f'{files_data["result_dir"]}/{filename.get()}.xlsx'
         create_xls_fie(final_order, result_file_path)
+        arrange_xls_file(result_file_path)
 
         messagebox.showinfo("Готово!", "Файл успешно сохранен в указаннной вами папке.")
-    except Exception:
+    except Exception as ex:
+        print(ex)
         messagebox.showinfo("Ошибка!", "Убедитесь в том что верно указали путь ко всем файлам.")
     finally:
         window.destroy()

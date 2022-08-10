@@ -13,6 +13,8 @@ def search(price: pd.DataFrame, formalized_order):
         for price_row in price.iterrows():
             price_data = price_row[1]
             if not pd.isnull(price_data["EAN"]) and int(price_data["EAN"]) == int(isbn):
+                order_row["Люмн. Код"] = price_data["Код"]
+                order_row["Люмн. Остаток"] = price_data["Остаток"]
                 order_row["Люмн. Цена"] = price_data["Цена"]
                 order_row["Люмн. Цена со скидкой"] = price_data["Цена со скидкой"]
                 break
