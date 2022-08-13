@@ -3,7 +3,9 @@ import tkinter.filedialog as fd
 from tkinter import messagebox
 from buyer_order_converter import get_order, convert_order
 from xls_maker import create_xls_fie, arrange_xls_file
+from merger import merge
 import lumna_searcher
+import lumna
 import interservice_searcher
 import pandas as pd
 
@@ -67,11 +69,15 @@ def process_order(files_data, filename, window):
         converted_order = convert_order(order)
 
         int_price = interservice_searcher.get_price(files_data["interservis_price"])
+        lumn_price = lumna_searcher.get_price(files_data["lumna_price"])
+
         result = interservice_searcher.search(int_price, converted_order)
         formalized_result = interservice_searcher.formalize_search_result(result)
+        extend_result = lumna_searcher.search(lumn_price, formalized_result)
 
-        lumn_price = lumna_searcher.get_price(files_data["lumna_price"])
-        final_order = lumna_searcher.search(lumn_price, formalized_result)
+        lumna_result = lumna.process_order(order=converted_order, price=lumn_price)
+
+        final_order = merge(extend_result, lumna_result)
 
         result_file_path = f'{files_data["result_dir"]}/{filename.get()}.xlsx'
         create_xls_fie(final_order, result_file_path)

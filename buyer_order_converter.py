@@ -43,6 +43,7 @@ def convert_order(order: pd.DataFrame):
         order_data["part"] = find_part(params)
         order_data["author"] = params[0].split()[0].lower()
         order_data.update(parse_subject(params[1]))
+        order_data["cls"] = find_cls(params)
         order_data.update(parse_book_info(params[-1]))
 
         for index, param in enumerate(params):
@@ -125,9 +126,16 @@ def find_part(params):
     return ""
 
 
+def find_cls(params):
+    part_pattern = r"\dкл"
+    for param in params:
+        if re.search(part_pattern, param):
+            span = re.search(r"\d", param).span()
+            return param[span[0]:span[1]]
+    return ""
+
+
 # order = get_order()
-# print(len(order))
-# [print(row[1]) for row in order.iterrows()]
 # [print(order_row) for order_row in convert_order(order)]
 
 

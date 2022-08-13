@@ -109,7 +109,7 @@ def parse_key_words(key_words):
 
 
 def formalize_search_result(result):
-    columns_for_del = ["Страниц", "Заказ", "Сумма", "Сумма со скидкой", "Автор", "Артикул"]
+    columns_for_del = ["Страниц", "Заказ", "Сумма", "Сумма со скидкой", "Автор", "Артикул", "Переплет", "Новинка", "В упаковке",]
 
     for row in result:
         for column in columns_for_del:
@@ -121,15 +121,23 @@ def formalize_search_result(result):
 
         row["Интер. Цена"] = row.pop("Цена")
         row["Интер. Цена со скидкой"] = row.pop("Цена со скидкой")
+        row["Интер. Остаток"] = row.pop("Остаток")
 
         row["Люмн. Цена"] = 0
         row["Люмн. Цена со скидкой"] = 0
         row["Люмн. Остаток"] = 0
 
-    # df = pd.DataFrame(result)
-    # df.to_excel("TryResult.xls")
-
     return result
+
+
+def process_order(order, file_price=None, price=None):
+    if file_price:
+        price = get_price(file_price)
+
+    result = search(price, order)
+    formalized_result = formalize_search_result(result)
+
+    return formalized_result
 
 
 # order = get_order()
@@ -137,4 +145,7 @@ def formalize_search_result(result):
 #
 # price = get_price()
 # result = search(price, converted_order)
-# [print(elem) for elem in result]
+# formalized_result = formalize_search_result(result)
+#
+# # df = pd.DataFrame(formalized_result)
+# # df.to_excel("Interresult.xls")
